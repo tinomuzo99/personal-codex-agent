@@ -32,7 +32,6 @@ Thumbs.db
 logs/
 
 # ---- Index & private data
-data/index/
 
 
 # Keep placeholders so folders exist

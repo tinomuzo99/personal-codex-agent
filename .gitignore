@@ -33,7 +33,7 @@ logs/
 
 # ---- Index & private data
 data/index/
-data/raw/
+
 
 # Keep placeholders so folders exist
 !data/.gitkeep

@@ -1,5 +1,26 @@
 from __future__ import annotations
 import os
+
+# --- path bootstrap (top of app/main.py) ---
+import os, sys, pathlib
+
+# Ensure the repo root is on sys.path (so "from app import ..." works)
+THIS_FILE = pathlib.Path(__file__).resolve()
+REPO_ROOT = THIS_FILE.parent.parent  # one level up from /app
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+# Prefer absolute import; fall back to relative if needed
+try:
+    from app.rag import RAGIndex
+    from app.modes import MODES
+    from app.voice import PERSONA
+except Exception:
+    # When executed in certain contexts that treat main.py as part of the package
+    from .rag import RAGIndex
+    from .modes import MODES
+    from .voice import PERSONA
+    
 import streamlit as st
 from dotenv import load_dotenv
 from typing import List, Dict, Any

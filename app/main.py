@@ -74,16 +74,59 @@ with st.sidebar:
 
 st.title("Ubundi Personal Codex Agent")
 
+# --- Sidebar uploader & on-the-fly indexing ---
+st.sidebar.markdown("### Ingest documents")
+uploaded = st.sidebar.file_uploader(
+    "Upload CV / supporting docs (PDF/MD/TXT)",
+    type=["pdf", "md", "txt"],
+    accept_multiple_files=True
+)
+
+if uploaded:
+    import os
+    from app.utils import ensure_dirs, glob_docs
+    from app.rag import RAGIndex
+
+    ensure_dirs()
+    os.makedirs("data/raw", exist_ok=True)
+
+    for up in uploaded:
+        dest = os.path.join("data/raw", up.name)
+        with open(dest, "wb") as f:
+            f.write(up.read())
+
+    # Build index from everything in data/raw
+    try:
+        idx = RAGIndex()
+        paths = glob_docs("data/raw")
+        if paths:
+            idx.build(paths)
+            st.sidebar.success("Index built. You can start asking questions.")
+            # bust any cached loader so future calls see the fresh index
+            if "load_index" in st.session_state:
+                del st.session_state["load_index"]
+        else:
+            st.sidebar.warning("No files found after upload.")
+    except Exception as e:
+        st.sidebar.error(f"Index build failed: {e}")
+
+
 # Ensure index availability (lazy)
 @st.cache_resource(show_spinner=False)
-def load_index() -> RAGIndex:
+def load_index():
+    from app.rag import RAGIndex
     idx = RAGIndex()
-    try:
-        idx.load()
-    except Exception as e:
-        st.info("Index not found or failed to load. Upload docs to `data/raw/` and run `make reindex`.")
-        raise e
+    idx.load()  # raises if missing
     return idx
+
+# where you retrieve:
+idx = None
+if rag_enabled:
+    try:
+        idx = load_index()
+    except Exception:
+        st.info("No index found yet. Upload documents in the sidebar to build one.")
+# only call idx.retrieve(...) if idx is not None
 
 # Simple chat state
 if "messages" not in st.session_state:

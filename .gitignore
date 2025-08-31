@@ -1,0 +1,44 @@
+# ---- Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ---- Virtual env
+.venv/
+env/
+venv/
+
+# ---- Editors/OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---- Environment & secrets
+.env
+.env.*
+!.env.example   # keep the example in git, ignore the real keys
+
+# ---- App caches
+.cache/
+.streamlit/
+logs/
+
+# ---- Index & private data
+data/index/
+data/raw/
+
+# Keep placeholders so folders exist
+!data/.gitkeep
+!data/raw/.gitkeep
+!data/index/.gitkeep
+
+# ---- Sentence-Transformers / model caches (if any end up here)
+models/

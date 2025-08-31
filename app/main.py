@@ -8,8 +8,35 @@ from app.rag import RAGIndex
 from app.modes import MODES
 from app.voice import PERSONA
 import re
+# --- path bootstrap (top of app/main.py) ---
+import os, sys, pathlib
+
+# Ensure the repo root is on sys.path (so "from app import ..." works)
+THIS_FILE = pathlib.Path(__file__).resolve()
+REPO_ROOT = THIS_FILE.parent.parent  # one level up from /app
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+# Prefer absolute import; fall back to relative if needed
+try:
+    from app.rag import RAGIndex
+    from app.modes import MODES
+    from app.voice import PERSONA
+except Exception:
+    # When executed in certain contexts that treat main.py as part of the package
+    from .rag import RAGIndex
+    from .modes import MODES
+    from .voice import PERSONA
 
 load_dotenv()
+
+# Use Streamlit secrets if env vars aren’t present
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+try:
+    import streamlit as st
+    OPENAI_API_KEY = OPENAI_API_KEY or st.secrets.get("OPENAI_API_KEY")
+except Exception:
+    pass
 
 st.set_page_config(page_title="Ubundi Personal Codex Agent", page_icon="🗂️", layout="wide")
 
@@ -63,7 +90,7 @@ def to_first_person(text: str) -> str:
     return out
 
 def llm_respond(system_prompt: str, user_prompt: str, temperature: float, model: str) -> str:
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("OPENAI_API_KEY")  or st.secrets.get("OPENAI_API_KEY")
     if not api_key:
         return "⚠️ OPENAI_API_KEY not set. Please configure your .env file."
 

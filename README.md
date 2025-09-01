@@ -121,6 +121,8 @@ If Windows Defender blocks executables, run Streamlit via Python module:
 - Streamlit Cloud or Dockerfile + Render/Fly; secrets via environment variables, not in repo.
 
 ---
+## Live Demo
+👉 [Try the Codex Agent here](https://personal-codex-agent-nws5hrqyetahb5zltmxedh.streamlit.app/)
 
 
 

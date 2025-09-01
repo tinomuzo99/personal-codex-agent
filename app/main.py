@@ -61,11 +61,6 @@ except Exception:
 
 st.set_page_config(page_title="Ubundi Personal Codex Agent", page_icon="🗂️", layout="wide")
 
-st.markdown("""
-# 👋 Welcome to Tinomutendayi Muzondidya’s Codex Agent
-Ask me questions about my background, projects, and skills.
-Use the sidebar to switch answer modes (Interview, Storytelling, Fast Facts).
-""")
 
 # Sidebar controls
 with st.sidebar:
